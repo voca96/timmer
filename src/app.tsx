@@ -1,4 +1,4 @@
-import React from 'react';
+import { PlayIcon, ResumeIcon, StopIcon } from './components/icons';
 import { useClock } from './hooks/useClock';
 import { useTimer } from './hooks/useTimer';
 
@@ -9,27 +9,62 @@ import './app.css';
 
 export default function App() {
 	//TIMER
-	const timer = useTimer({ time: '01:40:10' });
+	// const timer = useTimer({ time: '01:40:10' });
+	const { timer, setCurrentTimer, stop, start } = useTimer();
 	//TIME (Clock)
 	const clock = useClock();
 
+	// timer states play, start, resume, stop
+
 	return (
 		<main>
-			<aside>
-				{timerList.map(({ id, title, timer }) => {
-					return (
-						<div key={id}>
-							{title} - {timer}
-						</div>
-					);
-				})}
+			<aside className='time-list-section'>
+				<ul>
+					{timerList.map(({ id, title, timer }) => {
+						return (
+							<li
+								key={id}
+								onClick={() => {
+									{
+										/* select new timer, stop the current timer and start this timer */
+										setCurrentTimer(`${timer}`);
+									}
+								}}
+							>
+								{/* remove timer */}
+								{/* show the current timer and its status */}
+								{/* once the current timer has finished the next timer on the queue have to start */}
+								{title} - {timer}
+							</li>
+						);
+					})}
+				</ul>
 			</aside>
 			<div className='main-time'>
-				<div>
+				<div className='timers-counter'>
 					<h1>{timer}</h1>
 					<p>{clock}</p>
 				</div>
-				<div>{/* controls, start, stop */}</div>
+				<div className='controls'>
+					{/* controls, start, stop */}
+					<span
+						onClick={() => {
+							start(timer);
+						}}
+					>
+						<PlayIcon />
+					</span>
+					<span
+						onClick={() => {
+							stop();
+						}}
+					>
+						<StopIcon />
+					</span>
+					<span onClick={() => {}}>
+						<ResumeIcon />
+					</span>
+				</div>
 			</div>
 		</main>
 	);

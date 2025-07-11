@@ -26,6 +26,8 @@ p,
 input,
 span,
 form,
+ul,
+li,
 button {
 	box-sizing: border-box;
 	margin: 0;

@@ -8,18 +8,19 @@ export default defineConfig([
 	{
 		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 		plugins: { js },
+
 		extends: ['js/recommended'],
 	},
 	{
 		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 		languageOptions: { globals: globals.node },
 	},
-	{
-		rules: {
-			'react/react-in-jsx-scope': 1,
-			'react/jsx-uses-react': 1,
-		},
-	},
 	tseslint.configs.recommended,
 	pluginReact.configs.flat.recommended,
+	{
+		rules: {
+			'react/react-in-jsx-scope': 'off',
+			'react/jsx-uses-react': 'off',
+		},
+	},
 ]);

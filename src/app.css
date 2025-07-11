@@ -6,8 +6,8 @@ body,
 
 main {
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	/* justify-content:; */
+	/* align-items: center; */
 	height: 100%;
 	position: relative;
 }
@@ -15,8 +15,44 @@ main {
 .main-time {
 	display: flex;
 	justify-content: center;
-	align-items: end;
+	align-items: center;
+	width: 100%;
+}
+
+.timers-counter {
+	margin-right: 18px;
+	display: flex;
 	flex-direction: column;
+	justify-content: center;
+	align-items: end;
+}
+
+.controls {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	/* height: 100%; */
+}
+
+.time-list-section {
+	width: 28%;
+}
+
+.time-list-section ul {
+	list-style: none;
+	border-right: 1px solid black;
+	height: 100%;
+	overflow-y: auto;
+}
+
+.time-list-section ul li {
+	height: 55px;
+	padding: 12px 0 0 16px;
+	cursor: pointer;
+}
+
+.time-list-section ul li:hover {
+	background-color: #181818;
 }
 
 p,
@@ -104,4 +140,8 @@ h1 {
 .modal button:disabled {
 	background-color: #bbb;
 	cursor: none;
+}
+
+div.controls span {
+	cursor: pointer;
 }
