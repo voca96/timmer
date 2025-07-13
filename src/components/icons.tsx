@@ -42,10 +42,11 @@ export function AddIcon() {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
-			height='24px'
+			// height='24px'
 			viewBox='0 -960 960 960'
-			width='24px'
-			fill='#e3e3e3'
+			// width='24px'
+			className='add-icon'
+			fill='#fff'
 		>
 			<path d='M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z' />
 		</svg>
@@ -58,7 +59,7 @@ export function CloseIcon() {
 			height='24px'
 			viewBox='0 -960 960 960'
 			width='24px'
-			fill='#e3e3e3'
+			fill='#6e6e6eff'
 		>
 			<path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z' />
 		</svg>

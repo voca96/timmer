@@ -11,6 +11,8 @@
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	--modal-height: 65%;
+	--modal-width: 25%;
 }
 div,
 main,

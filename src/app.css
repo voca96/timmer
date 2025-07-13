@@ -36,6 +36,7 @@ main {
 
 .time-list-section {
 	width: 28%;
+	position: relative;
 }
 
 .time-list-section ul {
@@ -55,6 +56,22 @@ main {
 	background-color: #181818;
 }
 
+.time-list-section .add {
+	background-color: rgb(42, 161, 50);
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+	position: absolute;
+	right: 14px;
+	bottom: 20px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* font-size: em; */
+	color: white;
+}
+
 p,
 h1 {
 	margin: 0;
@@ -69,33 +86,66 @@ h1 {
 	font-size: 2em;
 }
 
+div.controls span {
+	cursor: pointer;
+}
+
+.modal-container {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(5px);
+}
+
 .modal {
 	background-color: white;
 	color: black;
-	height: 65%;
-	width: 50%;
+	height: var(--modal-height);
+	width: var(--modal-width);
 	display: flex;
 	box-shadow: 0 0 0 rgba(0, 0, 0, 0.6);
 	position: absolute;
+	top: calc((100% - var(--modal-height)) / 2);
+	left: calc((100% - var(--modal-width)) / 2);
 	padding: 40px;
 	display: flex;
 	flex-direction: column;
 	border-radius: 2px;
 }
 
+.modal h2 {
+	margin-bottom: 20px;
+}
+
+.close-modal-button {
+	position: absolute;
+	cursor: pointer;
+	right: 20px;
+	top: 20px;
+}
+
 .modal div input {
 	font-size: 5em;
 	width: 88px;
 	border: none;
+	padding: 0;
+	margin-bottom: 0;
+	text-align: right;
 }
 
 .modal input {
-	text-align: right;
 	background-color: transparent;
 	color: black;
 	border: none;
 	border-bottom: 1px solid #222;
+
 	height: fit-content;
+	padding-left: 8px;
+	padding-bottom: 6px;
+	width: 100%;
+	margin-bottom: 18px;
+	font-size: 1em;
 }
 
 .modal input:focus {
@@ -111,9 +161,6 @@ h1 {
 .modal p {
 	font-size: 88px;
 	line-height: 88px;
-	/* display: inline-flex;
-	justify-content: center;
-	align-items: center; */
 }
 
 .modal button {
@@ -125,23 +172,20 @@ h1 {
 	border-radius: 10px;
 	font-size: 2em;
 	font-weight: bold;
-	/* margin-left: auto; */
-
-	padding-bottom: 5px;
 	cursor: pointer;
 	position: absolute;
 	bottom: 40px;
 	right: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
-.modal button::after {
-	content: '+';
+
+.add-icon {
+	width: 32px;
 }
 
 .modal button:disabled {
 	background-color: #bbb;
-	cursor: none;
-}
-
-div.controls span {
-	cursor: pointer;
+	cursor: not-allowed;
 }

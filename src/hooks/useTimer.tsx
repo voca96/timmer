@@ -33,6 +33,10 @@ function useTimer() {
 			// get the difference between the time now and the futureTime
 			const distance = futureTime - new Date().getTime();
 
+			if (distance < 0) {
+				setTimer(EMPTY_TIMER);
+				return stop();
+			}
 			// console.log('difference between time now and time', distance);
 
 			//gets the hours, minutes and seconds remain

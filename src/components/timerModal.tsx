@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
+import { AddIcon, CloseIcon } from './icons';
+import { clock, timer } from '../types/timers';
 
-export default function TimerModal() {
+interface TimerModalProps {
+	onClose: () => void;
+	createTimer: (newTimer: timer) => void;
+}
+
+export default function TimerModal({ onClose, createTimer }: TimerModalProps) {
 	const [hour, setHour] = useState('00');
 	const [min, setMin] = useState('00');
 
@@ -12,7 +19,17 @@ export default function TimerModal() {
 
 		const from = new FormData(e.currentTarget);
 		const { hour, min, title } = Object.fromEntries(from);
-		console.log(hour, min, title);
+
+		// revisar
+		const newTimer = {
+			id: crypto.randomUUID(),
+			title: title.toString(),
+			timer: `${hour.toString().padStart(2, '0')}:${min
+				.toString()
+				.padStart(2, '0')}:00` as clock,
+		};
+		createTimer(newTimer);
+		onClose();
 	};
 
 	const onHandleHour = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,38 +43,50 @@ export default function TimerModal() {
 	};
 
 	return (
-		<div className='modal'>
-			<h2>create a new timer</h2>
-			<form onSubmit={onSubmit}>
-				<div>
+		<div className='modal-container'>
+			<div className='modal'>
+				<span
+					className='close-modal-button'
+					onClick={onClose}
+				>
+					<CloseIcon />
+				</span>
+				<h2>New timer</h2>
+				<form onSubmit={onSubmit}>
 					<input
 						type='text'
-						name='hour'
-						value={hour}
-						maxLength={2}
-						placeholder='00'
-						onChange={onHandleHour}
+						name='title'
+						autoComplete='off'
+						placeholder='Proyecto de Inventario ...'
 					/>
-					<p>:</p>
-					<input
-						type='text'
-						name='min'
-						value={min}
-						maxLength={2}
-						placeholder='00'
-						onChange={onHandleMin}
-					/>
-				</div>
-				<input
-					type='text'
-					name='title'
-					placeholder='title'
-				/>
-				<button
-					type='submit'
-					disabled={disabled}
-				/>
-			</form>
+					<div>
+						<input
+							type='text'
+							name='hour'
+							value={hour}
+							maxLength={2}
+							placeholder='00'
+							onChange={onHandleHour}
+						/>
+						<p>:</p>
+						<input
+							type='text'
+							name='min'
+							value={min}
+							maxLength={2}
+							placeholder='00'
+							onChange={onHandleMin}
+						/>
+					</div>
+
+					<button
+						type='submit'
+						disabled={disabled}
+					>
+						<AddIcon />
+					</button>
+				</form>
+			</div>
 		</div>
 	);
 }
