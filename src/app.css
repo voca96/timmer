@@ -48,8 +48,10 @@ main {
 
 .time-list-section ul li {
 	height: 55px;
-	padding: 12px 0 0 16px;
+	padding: 12px 8px 0 16px;
 	cursor: pointer;
+	width: 100%;
+	display: flex;
 }
 
 .time-list-section ul li:hover {
@@ -188,4 +190,12 @@ div.controls span {
 .modal button:disabled {
 	background-color: #bbb;
 	cursor: not-allowed;
+}
+
+.delete-icon {
+	margin-left: auto;
+	display: none;
+}
+li:hover .delete-icon {
+	display: block;
 }

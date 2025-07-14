@@ -1,20 +1,26 @@
-import { AddIcon, PlayIcon, ResumeIcon, StopIcon } from './components/icons';
+import { useEffect, useState } from 'react';
 import { useClock } from './hooks/useClock';
 import { useTimer } from './hooks/useTimer';
-
-import { timerList } from './mock/mockup';
-import './app.css';
+import { useTimerList } from './hooks/useTimerList';
+import {
+	AddIcon,
+	PlayIcon,
+	ResumeIcon,
+	StopIcon,
+	DeleteIcon,
+} from './components/icons';
 import TimerModal from './components/timerModal';
-import { useState } from 'react';
-import { timer } from './types/timers';
+
+import './app.css';
 
 //Search how create the time format for 00:00:00
 
 export default function App() {
 	//TIMER
-	const [timers, setTimers] = useState(timerList);
+	const { timerList, addNewTimer, deleteTimer } = useTimerList();
 	// const timer = useTimer({ time: '01:40:10' });
-	const { timer, setCurrentTimer, stop, start } = useTimer();
+	const { currentTimer, timerFinished, setCurrentTimer, stop, start } =
+		useTimer();
 	//TIME (Clock)
 	const clock = useClock();
 
@@ -23,30 +29,47 @@ export default function App() {
 
 	// timer states play, start, resume, stop
 
-	function addNewTimer(timerInfo: timer) {
-		alert('hi');
-		setTimers([...timers, timerInfo]);
-	}
+	useEffect(() => {
+		if (timerFinished !== null) {
+			const finishedId = timerList.findIndex(
+				(timer) => timer.id === timerFinished
+			);
+
+			if (finishedId + 1 < timerList.length) {
+				const nextTimer = timerList[finishedId + 1];
+				setCurrentTimer(nextTimer);
+			}
+		}
+	}, [timerFinished]);
 
 	return (
 		<main>
 			<aside className='time-list-section'>
 				<ul>
-					{timers.map(({ id, title, timer }) => {
+					{timerList.map((timer) => {
 						return (
 							<li
-								key={id}
-								onClick={() => {
+								key={timer.id}
+								onClick={(e) => {
 									{
+										e.stopPropagation();
 										/* select new timer, stop the current timer and start this timer */
-										setCurrentTimer(`${timer}`);
+										setCurrentTimer(timer);
 									}
 								}}
 							>
-								{/* remove timer */}
 								{/* show the current timer and its status */}
 								{/* once the current timer has finished the next timer on the queue have to start */}
-								{title} - {timer}
+								{timer.title} - {timer.timer}
+								<span
+									className='delete-icon'
+									onClick={(e) => {
+										e.stopPropagation();
+										deleteTimer(timer.id);
+									}}
+								>
+									<DeleteIcon />
+								</span>
 							</li>
 						);
 					})}
@@ -59,15 +82,18 @@ export default function App() {
 				</span>
 			</aside>
 			<div className='main-time'>
-				<div className='timers-counter'>
-					<h1>{timer}</h1>
-					<p>{clock}</p>
+				<div>
+					<h2>{currentTimer.title}</h2>
+					<div className='timers-counter'>
+						<h1>{currentTimer.timer}</h1>
+						<p>{clock}</p>
+					</div>
 				</div>
 				<div className='controls'>
 					{/* controls, start, stop */}
 					<span
 						onClick={() => {
-							start(timer);
+							start(currentTimer.timer);
 						}}
 					>
 						<PlayIcon />

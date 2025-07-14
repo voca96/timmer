@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AddIcon, CloseIcon } from './icons';
-import { clock, timer } from '../types/timers';
+import { timer } from '../types/timers';
 
 interface TimerModalProps {
 	onClose: () => void;
@@ -26,8 +26,9 @@ export default function TimerModal({ onClose, createTimer }: TimerModalProps) {
 			title: title.toString(),
 			timer: `${hour.toString().padStart(2, '0')}:${min
 				.toString()
-				.padStart(2, '0')}:00` as clock,
-		};
+				.padStart(2, '0')}:00`,
+			state: 'stand-by',
+		} as timer;
 		createTimer(newTimer);
 		onClose();
 	};
