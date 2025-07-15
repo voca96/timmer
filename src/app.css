@@ -48,14 +48,18 @@ main {
 
 .time-list-section ul li {
 	height: 55px;
-	padding: 12px 8px 0 16px;
 	cursor: pointer;
 	width: 100%;
 	display: flex;
 }
+.time-list-section ul li div {
+	width: 100%;
+	display: flex;
+	padding: 12px 8px 0 16px;
+}
 
-.time-list-section ul li:hover {
-	background-color: #181818;
+.time-list-section ul li div:hover {
+	background-color: #18181870;
 }
 
 .time-list-section .add {

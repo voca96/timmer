@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { AddIcon, CloseIcon } from './icons';
-import { timer } from '../types/timers';
+import { Timer } from '../types/timers';
 
 interface TimerModalProps {
 	onClose: () => void;
-	createTimer: (newTimer: timer) => void;
+	createTimer: (newTimer: Timer) => void;
 }
 
 export default function TimerModal({ onClose, createTimer }: TimerModalProps) {
@@ -20,15 +20,17 @@ export default function TimerModal({ onClose, createTimer }: TimerModalProps) {
 		const from = new FormData(e.currentTarget);
 		const { hour, min, title } = Object.fromEntries(from);
 
+		const clock = `${hour.toString().padStart(2, '0')}:${min
+			.toString()
+			.padStart(2, '0')}:00`;
 		// revisar
 		const newTimer = {
 			id: crypto.randomUUID(),
 			title: title.toString(),
-			timer: `${hour.toString().padStart(2, '0')}:${min
-				.toString()
-				.padStart(2, '0')}:00`,
+			timer: clock,
+			progress: clock,
 			state: 'stand-by',
-		} as timer;
+		} as Timer;
 		createTimer(newTimer);
 		onClose();
 	};

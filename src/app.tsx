@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useClock } from './hooks/useClock';
+import { useState } from 'react';
 import { useTimer } from './hooks/useTimer';
 import { useTimerList } from './hooks/useTimerList';
 import {
@@ -12,35 +11,21 @@ import {
 import TimerModal from './components/timerModal';
 
 import './app.css';
+import { getProgress } from './helpers';
+import Clock from './components/clock';
 
 //Search how create the time format for 00:00:00
 
 export default function App() {
 	//TIMER
-	const { timerList, addNewTimer, deleteTimer } = useTimerList();
-	// const timer = useTimer({ time: '01:40:10' });
-	const { currentTimer, timerFinished, setCurrentTimer, stop, start } =
-		useTimer();
+	const { timerList, addNewTimer, deleteTimer, updateTimer } = useTimerList();
+	const { currentTimer, setCurrentTimer, stop, start } = useTimer({
+		callback: (currentTimer) => updateTimer(currentTimer),
+	});
 	//TIME (Clock)
-	const clock = useClock();
 
 	//modal
 	const [openModal, setOpenModal] = useState(false);
-
-	// timer states play, start, resume, stop
-
-	useEffect(() => {
-		if (timerFinished !== null) {
-			const finishedId = timerList.findIndex(
-				(timer) => timer.id === timerFinished
-			);
-
-			if (finishedId + 1 < timerList.length) {
-				const nextTimer = timerList[finishedId + 1];
-				setCurrentTimer(nextTimer);
-			}
-		}
-	}, [timerFinished]);
 
 	return (
 		<main>
@@ -50,26 +35,50 @@ export default function App() {
 						return (
 							<li
 								key={timer.id}
+								style={{
+									background:
+										timer.progress !== timer.timer
+											? `linear-gradient(to right, ${
+													timer.state === 'on-going' ||
+													timer.state === 'finished'
+														? 'rgb(42, 161, 50)'
+														: 'rgba(189, 107, 35, 1)'
+											  } ${getProgress(
+													timer.timer,
+													timer.progress
+											  )}%, #242424 0%)`
+											: '',
+								}}
 								onClick={(e) => {
 									{
 										e.stopPropagation();
+										if (
+											timer.state === 'finished' ||
+											timer.state === 'on-going'
+										)
+											return;
 										/* select new timer, stop the current timer and start this timer */
+										//stop the current timer
+										stop();
+										// update the current timer
+										// set the new current timer
 										setCurrentTimer(timer);
 									}
 								}}
 							>
 								{/* show the current timer and its status */}
-								{/* once the current timer has finished the next timer on the queue have to start */}
-								{timer.title} - {timer.timer}
-								<span
-									className='delete-icon'
-									onClick={(e) => {
-										e.stopPropagation();
-										deleteTimer(timer.id);
-									}}
-								>
-									<DeleteIcon />
-								</span>
+								<div>
+									{timer.title} - {timer.timer}
+									<span
+										className='delete-icon'
+										onClick={(e) => {
+											e.stopPropagation();
+											deleteTimer(timer.id);
+										}}
+									>
+										<DeleteIcon />
+									</span>
+								</div>
 							</li>
 						);
 					})}
@@ -85,15 +94,19 @@ export default function App() {
 				<div>
 					<h2>{currentTimer.title}</h2>
 					<div className='timers-counter'>
-						<h1>{currentTimer.timer}</h1>
-						<p>{clock}</p>
+						<h1>{currentTimer.progress}</h1>
+						<Clock />
 					</div>
 				</div>
 				<div className='controls'>
-					{/* controls, start, stop */}
+					{/* start, stop reset*/}
 					<span
 						onClick={() => {
-							start(currentTimer.timer);
+							if (
+								currentTimer.state === 'stand-by' ||
+								currentTimer.state === 'stop'
+							)
+								start(currentTimer.progress);
 						}}
 					>
 						<PlayIcon />

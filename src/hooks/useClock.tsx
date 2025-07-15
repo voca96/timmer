@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { clock } from '../types/timers';
+import { Clock } from '../types/timers';
 
 function useClock() {
-	const [clock, setClock] = useState<clock>('00:00:00');
+	const [clock, setClock] = useState<Clock>('00:00:00');
 	const refClock = useRef<ReturnType<typeof setInterval>>(null);
 
 	useEffect(() => {
@@ -21,7 +21,10 @@ function useClock() {
 			);
 		}, 1000);
 		return () => {
-			if (refClock.current) clearInterval(refClock.current);
+			if (refClock.current) {
+				clearInterval(refClock.current);
+				refClock.current = null;
+			}
 		};
 	}, []);
 

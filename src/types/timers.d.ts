@@ -1,12 +1,13 @@
-type clock = `${string}:${string}:${string}`;
+type Clock = `${string}:${string}:${string}`;
 
-type timerId = `${string}-${string}-${string}-${string}-${string}`;
+type TimerId = `${string}-${string}-${string}-${string}-${string}`;
 
-type timer = {
-	id: timerId;
+type Timer = {
+	id: TimerId;
 	title: string;
-	timer: clock;
-	state: timerState;
+	timer: Clock;
+	state: TimerState;
+	progress: Clock;
 };
 
 const TIMER_STATES = {
@@ -16,8 +17,8 @@ const TIMER_STATES = {
 	finished: 'finished', // the timer stop counting
 } as const;
 
-type timerState = (typeof TIMER_STATES)[keyof typeof TIMER_STATES];
+type TimerState = (typeof TIMER_STATES)[keyof typeof TIMER_STATES];
 
-type timers = timer[];
+type Timers = Timer[];
 
-export { clock, timer, timers, timerState, timerId };
+export { Clock, Timer, Timers, TimerState, TimerId };
