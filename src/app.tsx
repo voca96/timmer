@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useTimer } from './hooks/useTimer';
+import { useEffect, useState } from 'react';
+import { EMPTY_TIME, useTimer } from './hooks/useTimer';
 import { useTimerList } from './hooks/useTimerList';
 import {
 	AddIcon,
@@ -7,29 +7,65 @@ import {
 	ResumeIcon,
 	StopIcon,
 	DeleteIcon,
+	AutoPlayIcon,
 } from './components/icons';
 import TimerModal from './components/timerModal';
 
 import './app.css';
-import { getProgress } from './helpers';
+import { getProgress, playSound, AudioSelect } from './helpers';
 import Clock from './components/clock';
 
 //Search how create the time format for 00:00:00
 
 export default function App() {
 	//TIMER
-	const { timerList, addNewTimer, deleteTimer, updateTimer } = useTimerList();
-	const { currentTimer, setCurrentTimer, stop, start } = useTimer({
+	const { timerList, addNewTimer, deleteTimer, updateTimer, restartTimer } =
+		useTimerList();
+	const { currentTimer, setCurrentTimer, stop, start, restart } = useTimer({
 		callback: (currentTimer) => updateTimer(currentTimer),
 	});
-	//TIME (Clock)
-
 	//modal
 	const [openModal, setOpenModal] = useState(false);
+
+	// custom hook "useAutoPlay"
+	const [autoPlay, setAutoPlay] = useState(false);
+
+	useEffect(() => {
+		if (autoPlay && currentTimer.state === 'finished') {
+			const { id } = currentTimer;
+			const currentIndex = timerList.findIndex((timer) => timer.id === id);
+			if (currentIndex + 1 >= timerList.length) return;
+			//check the state of the next timer, if the state is not "stand-by" restart the state
+			if (timerList[currentIndex + 1].state !== 'stand-by') {
+				restartTimer(timerList[currentIndex + 1]);
+
+				const nextTimer = timerList.filter(
+					(timer) => timerList[currentIndex + 1].id === timer.id
+				)[0];
+
+				setCurrentTimer({
+					...nextTimer,
+					state: 'stand-by',
+					progress: nextTimer.timer,
+				});
+				return;
+			}
+			setCurrentTimer(timerList[currentIndex + 1]);
+		}
+	}, [currentTimer.state]);
+
+	useEffect(() => {
+		if (autoPlay && currentTimer.progress !== EMPTY_TIME) {
+			start(currentTimer.progress);
+		}
+	}, [currentTimer.id]);
+
+	// until here 'useAutoPlay'
 
 	return (
 		<main>
 			<aside className='time-list-section'>
+				{/* COMPONENT "TimerList"*/}
 				<ul>
 					{timerList.map((timer) => {
 						return (
@@ -63,6 +99,7 @@ export default function App() {
 										// update the current timer
 										// set the new current timer
 										setCurrentTimer(timer);
+										playSound(AudioSelect);
 									}
 								}}
 							>
@@ -83,11 +120,19 @@ export default function App() {
 						);
 					})}
 				</ul>
+				{/* COMPONENT "TimerList"*/}
 				<span
 					className='add'
 					onClick={() => setOpenModal(true)}
 				>
 					<AddIcon />
+				</span>
+
+				<span
+					className={`auto-play ${autoPlay ? '' : 'disabled'}`}
+					onClick={() => setAutoPlay((prev) => !prev)}
+				>
+					<AutoPlayIcon />
 				</span>
 			</aside>
 			<div className='main-time'>
@@ -98,30 +143,49 @@ export default function App() {
 						<Clock />
 					</div>
 				</div>
+
+				{/* COMPONENT Controls*/}
 				<div className='controls'>
 					{/* start, stop reset*/}
-					<span
-						onClick={() => {
-							if (
-								currentTimer.state === 'stand-by' ||
-								currentTimer.state === 'stop'
-							)
-								start(currentTimer.progress);
-						}}
-					>
-						<PlayIcon />
-					</span>
-					<span
-						onClick={() => {
-							stop();
-						}}
-					>
-						<StopIcon />
-					</span>
-					<span onClick={() => {}}>
-						<ResumeIcon />
-					</span>
+					{currentTimer.timer !== EMPTY_TIME && (
+						<>
+							{(currentTimer.state === 'stand-by' ||
+								currentTimer.state === 'stop') && (
+								<span
+									onClick={() => {
+										playSound(AudioSelect);
+										start(currentTimer.progress);
+									}}
+								>
+									<PlayIcon />
+								</span>
+							)}
+
+							{currentTimer.state === 'on-going' && (
+								<span
+									onClick={() => {
+										playSound(AudioSelect);
+										stop();
+									}}
+								>
+									<StopIcon />
+								</span>
+							)}
+							{currentTimer.state === 'stop' && (
+								<span
+									onClick={() => {
+										playSound(AudioSelect);
+										restartTimer(currentTimer);
+										restart();
+									}}
+								>
+									<ResumeIcon />
+								</span>
+							)}
+						</>
+					)}
 				</div>
+				{/* COMPONENT Controls*/}
 			</div>
 			{openModal && (
 				<TimerModal

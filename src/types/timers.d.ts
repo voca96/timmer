@@ -1,3 +1,10 @@
+const TIMER_STATES = {
+	stadBy: 'stand-by', // the timer dont start yet
+	resume: 'on-going', // the timer start counting
+	stop: 'stop', // the timer stop counting and maintain the current value
+	finished: 'finished', // the timer stop counting
+} as const;
+
 type Clock = `${string}:${string}:${string}`;
 
 type TimerId = `${string}-${string}-${string}-${string}-${string}`;
@@ -9,13 +16,6 @@ type Timer = {
 	state: TimerState;
 	progress: Clock;
 };
-
-const TIMER_STATES = {
-	stadBy: 'stand-by', // the timer dont start yet
-	resume: 'on-going', // the timer start counting
-	stop: 'stop', // the timer stop counting and maintain the current value
-	finished: 'finished', // the timer stop counting
-} as const;
 
 type TimerState = (typeof TIMER_STATES)[keyof typeof TIMER_STATES];
 

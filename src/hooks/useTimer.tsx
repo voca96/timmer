@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Clock, Timer } from '../types/timers';
-import { getFutureTime, parseClock } from '../helpers';
+import { getFutureTime, parseClock, playSound, AudioFinish } from '../helpers';
 
 export const EMPTY_TIME: Clock = '00:00:00';
 
@@ -24,14 +24,10 @@ function useTimer({ callback }: useTimerProps) {
 	const start = useCallback(
 		(time: Clock) => {
 			const futureTime = getFutureTime(time);
-			console.log(refTimer.current);
+
 			refTimer.current = setInterval(() => {
 				// get the difference between the time now and the futureTime
 				const distance = futureTime - new Date().getTime();
-
-				if (distance < -1000) {
-					finished();
-				}
 
 				if (distance < 0) {
 					return setCurrentTimer({
@@ -55,6 +51,15 @@ function useTimer({ callback }: useTimerProps) {
 		[currentTimer.id]
 	);
 
+	function restart(): void {
+		stop();
+		setCurrentTimer((prev) => ({
+			...prev,
+			state: 'stand-by',
+			progress: prev.timer,
+		}));
+	}
+
 	function stop(): void {
 		if (refTimer.current) {
 			setCurrentTimer((prev) => {
@@ -76,18 +81,18 @@ function useTimer({ callback }: useTimerProps) {
 
 	useEffect(() => {
 		// this portion for do an action eact time that the current timer gets modified
-		console.log('hola');
 		if (callback != undefined) {
 			if (currentTimer.state === 'on-going') callback(currentTimer);
 
 			if (currentTimer.state === 'finished') {
 				callback(currentTimer);
+				playSound(AudioFinish);
 				finished();
 			}
 		}
 	}, [currentTimer.progress, currentTimer.state]);
 
-	return { currentTimer, setCurrentTimer, stop, start };
+	return { currentTimer, setCurrentTimer, stop, start, restart };
 }
 
 export { useTimer };

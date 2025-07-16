@@ -27,5 +27,18 @@ export function useTimerList() {
 		});
 	}
 
-	return { timerList: state, addNewTimer, deleteTimer, updateTimer };
+	function restartTimer(timer: Timer) {
+		dispatch({
+			type: TIMERS_ACTIONS.RESTART,
+			payload: { timer },
+		});
+	}
+
+	return {
+		timerList: state,
+		addNewTimer,
+		deleteTimer,
+		updateTimer,
+		restartTimer,
+	};
 }

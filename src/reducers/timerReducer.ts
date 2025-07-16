@@ -4,6 +4,7 @@ export const TIMERS_ACTIONS = {
 	ADD: 'ADD_TIMER',
 	DELETE: 'DELETE_TIMER',
 	UPDATE: 'UPDATE_TIMER',
+	RESTART: 'RESTART_TIMER',
 } as const;
 
 type AddTimer = {
@@ -21,11 +22,17 @@ type UpdateTimer = {
 	payload: { timer: Timer };
 };
 
-type action = AddTimer | DeleteTimer | UpdateTimer;
+type RestartTimer = {
+	type: typeof TIMERS_ACTIONS.RESTART;
+	payload: { timer: Timer };
+};
 
-function timerReducer(state: Timers, action: action) {
+type ActionType = AddTimer | DeleteTimer | UpdateTimer | RestartTimer;
+
+function timerReducer(state: Timers, action: ActionType) {
 	switch (action.type) {
 		case TIMERS_ACTIONS.ADD: {
+			console.log('hi');
 			const { timer } = action.payload;
 			return [...state, timer];
 		}
@@ -45,6 +52,17 @@ function timerReducer(state: Timers, action: action) {
 				...state.slice(timerIndex + 1),
 			];
 			return modifiedList;
+		}
+
+		case TIMERS_ACTIONS.RESTART: {
+			const { id, timer } = action.payload.timer;
+			const timerIndex = state.findIndex((timer) => timer.id === id);
+			const newTimerList = [
+				...state.slice(0, timerIndex),
+				{ ...action.payload.timer, progress: timer, state: 'stand-by' },
+				...state.slice(timerIndex + 1),
+			];
+			return newTimerList;
 		}
 
 		default:

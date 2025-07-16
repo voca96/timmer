@@ -78,6 +78,26 @@ main {
 	color: white;
 }
 
+.time-list-section .auto-play {
+	background-color: rgb(42, 161, 50);
+	border-radius: 50%;
+	height: 40px;
+	width: 40px;
+	position: absolute;
+	right: 69px;
+	bottom: 20px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* font-size: em; */
+	color: white;
+}
+
+.time-list-section .auto-play.disabled {
+	background-color: #575757;
+}
+
 p,
 h1 {
 	margin: 0;

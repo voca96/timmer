@@ -1,4 +1,6 @@
 import { Clock } from './types/timers';
+import AudioFinish from './assets/audio/finish.wav';
+import AudioSelect from './assets/audio/select.mp3';
 
 export function timeToMili(time: Clock) {
 	//lets assume that we have 3 variables h, m, s
@@ -29,8 +31,13 @@ export function parseClock(distance: number): Clock {
 
 export function getProgress(timer: Clock, progress?: Clock): number {
 	if (!progress) return 0;
-	console.log(timeToMili(progress));
-	// console.log(timeToMili(timer));
 	const diference = timeToMili(timer) - timeToMili(progress);
 	return Math.floor((diference * 100) / timeToMili(timer));
 }
+
+export function playSound(audioFile: string) {
+	const audio = new Audio(audioFile);
+	audio.play();
+}
+
+export { AudioFinish, AudioSelect };
