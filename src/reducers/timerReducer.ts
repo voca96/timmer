@@ -29,17 +29,27 @@ type RestartTimer = {
 
 type ActionType = AddTimer | DeleteTimer | UpdateTimer | RestartTimer;
 
+export function getTimerList(): Timers {
+	return JSON.parse(window.localStorage.getItem('timers') || '[]');
+}
+
+function setTimerList(timerList: Timers) {
+	window.localStorage.setItem('timers', JSON.stringify(timerList));
+}
+
 function timerReducer(state: Timers, action: ActionType) {
 	switch (action.type) {
 		case TIMERS_ACTIONS.ADD: {
 			console.log('hi');
 			const { timer } = action.payload;
+			setTimerList([...state, timer]);
 			return [...state, timer];
 		}
 
 		case TIMERS_ACTIONS.DELETE: {
 			const { id } = action.payload;
 			const newTimerList = state.filter((timer) => timer.id !== id);
+			setTimerList(newTimerList);
 			return newTimerList;
 		}
 
@@ -51,18 +61,20 @@ function timerReducer(state: Timers, action: ActionType) {
 				action.payload.timer,
 				...state.slice(timerIndex + 1),
 			];
+			setTimerList(modifiedList);
 			return modifiedList;
 		}
 
 		case TIMERS_ACTIONS.RESTART: {
 			const { id, timer } = action.payload.timer;
 			const timerIndex = state.findIndex((timer) => timer.id === id);
-			const newTimerList = [
+			const modifiedList = [
 				...state.slice(0, timerIndex),
 				{ ...action.payload.timer, progress: timer, state: 'stand-by' },
 				...state.slice(timerIndex + 1),
-			];
-			return newTimerList;
+			] as Timers;
+			setTimerList(modifiedList);
+			return modifiedList;
 		}
 
 		default:

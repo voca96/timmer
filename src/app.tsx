@@ -8,6 +8,8 @@ import {
 	StopIcon,
 	DeleteIcon,
 	AutoPlayIcon,
+	NotificationIcon,
+	NoNotificationIcon,
 } from './components/icons';
 import TimerModal from './components/timerModal';
 
@@ -21,11 +23,15 @@ export default function App() {
 	//TIMER
 	const { timerList, addNewTimer, deleteTimer, updateTimer, restartTimer } =
 		useTimerList();
+	const [notification, setNotification] = useState(false);
 	const { currentTimer, setCurrentTimer, stop, start, restart } = useTimer({
 		callback: (currentTimer) => updateTimer(currentTimer),
+		playNotification: notification,
 	});
 	//modal
 	const [openModal, setOpenModal] = useState(false);
+
+	// Notification
 
 	// custom hook "useAutoPlay"
 	const [autoPlay, setAutoPlay] = useState(false);
@@ -66,73 +72,87 @@ export default function App() {
 		<main>
 			<aside className='time-list-section'>
 				{/* COMPONENT "TimerList"*/}
-				<ul>
-					{timerList.map((timer) => {
-						return (
-							<li
-								key={timer.id}
-								style={{
-									background:
-										timer.progress !== timer.timer
-											? `linear-gradient(to right, ${
-													timer.state === 'on-going' ||
-													timer.state === 'finished'
-														? 'rgb(42, 161, 50)'
-														: 'rgba(189, 107, 35, 1)'
-											  } ${getProgress(
-													timer.timer,
-													timer.progress
-											  )}%, #242424 0%)`
-											: '',
-								}}
-								onClick={(e) => {
-									{
-										e.stopPropagation();
-										if (
-											timer.state === 'finished' ||
-											timer.state === 'on-going'
-										)
-											return;
-										/* select new timer, stop the current timer and start this timer */
-										//stop the current timer
-										stop();
-										// update the current timer
-										// set the new current timer
-										setCurrentTimer(timer);
-										playSound(AudioSelect);
-									}
-								}}
-							>
-								{/* show the current timer and its status */}
-								<div>
-									{timer.title} - {timer.timer}
-									<span
-										className='delete-icon'
-										onClick={(e) => {
+				{timerList.length > 0 ? (
+					<ul>
+						{timerList.map((timer) => {
+							return (
+								<li
+									key={timer.id}
+									style={{
+										background:
+											timer.progress !== timer.timer
+												? `linear-gradient(to right, ${
+														timer.state === 'on-going' ||
+														timer.state === 'finished'
+															? 'rgb(42, 161, 50)'
+															: 'rgba(189, 107, 35, 1)'
+												  } ${getProgress(
+														timer.timer,
+														timer.progress
+												  )}%, #242424 0%)`
+												: '',
+									}}
+									onClick={(e) => {
+										{
 											e.stopPropagation();
-											deleteTimer(timer.id);
-										}}
-									>
-										<DeleteIcon />
-									</span>
-								</div>
-							</li>
-						);
-					})}
-				</ul>
+											if (timer.state === 'on-going') return;
+											/* select new timer, stop the current timer and start this timer */
+											//stop the current timer
+											stop();
+											// update the current timer
+											// set the new current timer
+											setCurrentTimer(timer);
+											playSound(AudioSelect, notification);
+										}
+									}}
+								>
+									{/* show the current timer and its status */}
+									<div>
+										{timer.title} - {timer.timer}
+										<span
+											className='delete-icon'
+											onClick={(e) => {
+												e.stopPropagation();
+												deleteTimer(timer.id);
+											}}
+										>
+											<DeleteIcon />
+										</span>
+									</div>
+								</li>
+							);
+						})}
+					</ul>
+				) : (
+					<div>
+						<h2>No Timers, please create one.</h2>
+					</div>
+				)}
+
 				{/* COMPONENT "TimerList"*/}
 				<span
-					className='add'
+					className='add action-button'
 					onClick={() => setOpenModal(true)}
 				>
 					<AddIcon />
 				</span>
 
 				<span
-					className={`auto-play ${autoPlay ? '' : 'disabled'}`}
+					className={`auto-play action-button ${autoPlay ? '' : 'disabled'}`}
 					onClick={() => setAutoPlay((prev) => !prev)}
 				>
 					<AutoPlayIcon />
+				</span>
+
+				<span
+					className={`notification action-button ${
+						notification ? '' : 'disabled'
+					}`}
+					onClick={() => {
+						setNotification((prev) => !prev);
+					}}
+				>
+					{notification ? <NotificationIcon /> : <NoNotificationIcon />}
 				</span>
 			</aside>
 			<div className='main-time'>
@@ -153,7 +173,7 @@ export default function App() {
 								currentTimer.state === 'stop') && (
 								<span
 									onClick={() => {
-										playSound(AudioSelect);
+										playSound(AudioSelect, notification);
 										start(currentTimer.progress);
 									}}
 								>
@@ -164,17 +184,18 @@ export default function App() {
 							{currentTimer.state === 'on-going' && (
 								<span
 									onClick={() => {
-										playSound(AudioSelect);
+										playSound(AudioSelect, notification);
 										stop();
 									}}
 								>
 									<StopIcon />
 								</span>
 							)}
-							{currentTimer.state === 'stop' && (
+							{(currentTimer.state === 'stop' ||
+								currentTimer.state === 'finished') && (
 								<span
 									onClick={() => {
-										playSound(AudioSelect);
+										playSound(AudioSelect, notification);
 										restartTimer(currentTimer);
 										restart();
 									}}

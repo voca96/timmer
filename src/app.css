@@ -61,41 +61,37 @@ main {
 .time-list-section ul li div:hover {
 	background-color: #18181870;
 }
-
-.time-list-section .add {
+.time-list-section .action-button {
 	background-color: rgb(42, 161, 50);
 	border-radius: 50%;
-	height: 50px;
-	width: 50px;
 	position: absolute;
-	right: 14px;
 	bottom: 20px;
 	cursor: pointer;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* font-size: em; */
 	color: white;
+}
+.time-list-section .add {
+	height: 50px;
+	width: 50px;
+	right: 14px;
 }
 
 .time-list-section .auto-play {
-	background-color: rgb(42, 161, 50);
-	border-radius: 50%;
 	height: 40px;
 	width: 40px;
-	position: absolute;
 	right: 69px;
-	bottom: 20px;
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* font-size: em; */
-	color: white;
 }
 
-.time-list-section .auto-play.disabled {
-	background-color: #575757;
+.time-list-section .disabled {
+	background-color: #575757 !important;
+}
+
+.time-list-section .notification {
+	height: 40px;
+	width: 40px;
+	right: 113px;
 }
 
 p,

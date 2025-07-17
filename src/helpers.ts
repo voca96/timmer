@@ -35,9 +35,11 @@ export function getProgress(timer: Clock, progress?: Clock): number {
 	return Math.floor((diference * 100) / timeToMili(timer));
 }
 
-export function playSound(audioFile: string) {
-	const audio = new Audio(audioFile);
-	audio.play();
+export function playSound(audioFile: string, play = true) {
+	if (play) {
+		const audio = new Audio(audioFile);
+		audio.play();
+	}
 }
 
 export { AudioFinish, AudioSelect };

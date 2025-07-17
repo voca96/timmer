@@ -14,9 +14,10 @@ const EMPTY_TIMER: Timer = {
 
 interface useTimerProps {
 	callback?: (currentTimer: Timer) => void;
+	playNotification?: boolean;
 }
-
-function useTimer({ callback }: useTimerProps) {
+//Maybe needs an action for: eact time currentTimer update, and when finish
+function useTimer({ callback, playNotification }: useTimerProps) {
 	const [currentTimer, setCurrentTimer] = useState<Timer>(EMPTY_TIMER);
 
 	const refTimer = useRef<ReturnType<typeof setInterval>>(null);
@@ -86,7 +87,7 @@ function useTimer({ callback }: useTimerProps) {
 
 			if (currentTimer.state === 'finished') {
 				callback(currentTimer);
-				playSound(AudioFinish);
+				playSound(AudioFinish, playNotification);
 				finished();
 			}
 		}
