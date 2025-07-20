@@ -1,10 +1,14 @@
 import { useReducer } from 'react';
-import { timerReducer, TIMERS_ACTIONS } from '../reducers/timerReducer';
+import {
+	getTimerList,
+	timerReducer,
+	TIMERS_ACTIONS,
+} from '../reducers/timerReducer';
 import { Timer, TimerId } from '../types/timers';
-import { timerList } from '../mock/mockup';
+// import { timerList } from '../mock/mockup';
 
 export function useTimerList() {
-	const [state, dispatch] = useReducer(timerReducer, timerList);
+	const [state, dispatch] = useReducer(timerReducer, getTimerList());
 
 	function addNewTimer(timer: Timer) {
 		dispatch({

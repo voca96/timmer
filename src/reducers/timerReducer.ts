@@ -40,7 +40,6 @@ function setTimerList(timerList: Timers) {
 function timerReducer(state: Timers, action: ActionType) {
 	switch (action.type) {
 		case TIMERS_ACTIONS.ADD: {
-			console.log('hi');
 			const { timer } = action.payload;
 			setTimerList([...state, timer]);
 			return [...state, timer];

@@ -8,7 +8,7 @@ const EMPTY_TIMER: Timer = {
 	id: crypto.randomUUID(),
 	timer: EMPTY_TIME,
 	title: 'Elige un temporizador!',
-	state: 'stand-by',
+	state: 'empty-timer',
 	progress: EMPTY_TIME,
 };
 

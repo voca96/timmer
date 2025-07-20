@@ -3,6 +3,7 @@ const TIMER_STATES = {
 	resume: 'on-going', // the timer start counting
 	stop: 'stop', // the timer stop counting and maintain the current value
 	finished: 'finished', // the timer stop counting
+	empty: 'empty-timer', // the timer stop counting
 } as const;
 
 type Clock = `${string}:${string}:${string}`;
